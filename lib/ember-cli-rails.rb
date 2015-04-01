@@ -26,7 +26,7 @@ module EmberCLI
 
   def prepare!
     @prepared ||= begin
-      Rails.configuration.assets.paths << root.join("assets").to_s
+      Rails.configuration.assets.paths << assets_path.to_s
       at_exit{ cleanup }
       true
     end
@@ -72,6 +72,10 @@ module EmberCLI
     @root ||= Rails.root.join("tmp", "ember-cli-#{uid}")
   end
 
+  def assets_path
+    configuration.assets_path || root.join("assets").tap(&:mkpath)
+  end
+
   private
 
   def uid
@@ -79,6 +83,8 @@ module EmberCLI
   end
 
   def cleanup
+    return if (Rails.env == 'production' && Rails.version =~ /\A3\./) || ENV["EMBER_CLI_NO_CLEANUP"]
+    each_app &:remove_symlink
     root.rmtree if root.exist?
   end
 

@@ -197,8 +197,17 @@ module EmberCLI
       end
     end
 
+    def remove_symlink
+      File.delete(assets_symlink_path) if File.exist?(assets_symlink_path)
+    end
+
+    def assets_symlink_path
+      assets_path.join(name)
+    end
+
     def symlink_to_assets_root
-      assets_path.join(name).make_symlink dist_path.join("assets")
+      remove_symlink
+      assets_symlink_path.make_symlink dist_path.join("assets")
     rescue Errno::EEXIST
       # Sometimes happens when starting multiple Unicorn workers.
       # Ignoring...
@@ -242,11 +251,11 @@ module EmberCLI
     end
 
     def assets_path
-      @assets_path ||= EmberCLI.root.join("assets").tap(&:mkpath)
+      @assets_path ||= EmberCLI.assets_path
     end
 
     def environment
-      non_production?? "development" : "production"
+      ENV['EMBER_CLI_ENV'] || (non_production?? "development" : "production")
     end
 
     def package_json
