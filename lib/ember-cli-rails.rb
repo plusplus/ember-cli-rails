@@ -84,7 +84,7 @@ module EmberCLI
 
   def cleanup
     return if (Rails.env == 'production' && Rails.version =~ /\A3\./) || ENV["EMBER_CLI_NO_CLEANUP"]
-    each_app &:remove_symlink
+    each_app &:cleanup
     root.rmtree if root.exist?
   end
 

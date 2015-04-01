@@ -17,6 +17,10 @@ module EmberCLI
       dist_path.join("tests")
     end
 
+    def cleanup
+      remove_symlink
+    end
+
     def compile
       prepare
       silence_build { exec command }
