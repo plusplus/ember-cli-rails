@@ -12,6 +12,14 @@ module EmberCLI
       @apps ||= HashWithIndifferentAccess.new
     end
 
+    def assets_path=(path)
+      @assets_path = path
+    end
+
+    def assets_path
+      @assets_path
+    end
+
     def tee_path
       return @tee_path if defined?(@tee_path)
       @tee_path = Helpers.which("tee")
